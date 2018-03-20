@@ -79,7 +79,6 @@ class UserController extends Controller {
     const { ctx, service } = this;
     ctx.validate(this.UseIdrRule, ctx.params)
     const { params: { id = 0 } } = ctx;
-    console.log(id)
     const res = await service.user.findUserById(id);
     this.success({ res })
   }

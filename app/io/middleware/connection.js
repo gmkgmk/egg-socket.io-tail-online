@@ -1,19 +1,27 @@
 module.exports = app => {
   return async (ctx, next) => {
-    // const user = await ctx.service.user.create();
-    const user={
-      key:'41be203b-4a2b-487b-b136-d197e03b8225',
-      name:'正在睡觉',
-      avatar:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png	"		
+    // const { key } = ctx.req._query;
+    // const userResult = await ctx.service.user.findUserById(key);
+    // if(userResult){
+    //   const userlist = userResult.friendList.split(",");
+    //   const res = await ctx.service.friends.findAllFriend(userlist);
+    //   ctx.socket.emit("userList", res);
+    // }
+
+    // 发送私聊
+    let userInfo = ctx.session.userInfo;
+    const { id } = ctx.socket;
+    userInfo.socketId = id;
+    ctx.socket.emit("userInfo", userInfo);
+
+    const { friendList } = userInfo;
+    if (friendList) {
+      const userlist = friendList.split(",");
+      const res = await ctx.service.friends.findAllFriend(userlist);
+      ctx.socket.emit("server:friendList", res);
     }
-    
-    const message = {
-      type: "userInfo",
-      user
-    };
-    ctx.socket.emit("userInfo", message);
+
     await next();
 
-    console.log('disconnection!');
   };
 };

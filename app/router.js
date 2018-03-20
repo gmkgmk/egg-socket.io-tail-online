@@ -15,7 +15,9 @@ module.exports = app => {
   // router.delete(`${API}/user/deleteUser`, controller.user.deleteUser);
   app.router.resources('users', `${API}/user`, app.controller.user);
   app.router.resources('session', `${API}/session`, app.controller.session);
+  app.router.resources('friends', `${API}/friends`, app.controller.friends);
 
   app.io.route('connection', io.controller.home.index);
   app.io.route('message', io.controller.home.message);
+  app.io.route('privateChat', io.controller.home.privateChat);
 };

@@ -4,6 +4,7 @@
   "description": "study egg",
   "private": true,
   "dependencies": {
+    "crypto": "^1.0.1",
     "egg": "^2.0.0",
     "egg-cors": "^2.0.0",
     "egg-mysql": "^3.0.0",
@@ -12,6 +13,7 @@
     "egg-session": "^3.1.0",
     "egg-socket.io": "^4.0.6",
     "egg-validate": "^1.0.0",
+    "identicon.js": "^2.3.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
