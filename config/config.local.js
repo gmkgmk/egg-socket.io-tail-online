@@ -23,7 +23,7 @@ exports.io = {
   namespace: {
     '/': {
       connectionMiddleware: ["connection"],
-      packetMiddleware: [],
+      packetMiddleware: ["test"],
     },
   },
 };

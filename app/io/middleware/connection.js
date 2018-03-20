@@ -10,9 +10,11 @@ module.exports = app => {
 
     // 发送私聊
     let userInfo = ctx.session.userInfo;
-    const { id } = ctx.socket;
-    userInfo.socketId = id;
     ctx.socket.emit("userInfo", userInfo);
+
+
+    let user = await ctx.service.session.registerClient(userInfo.pid, ctx.socket.id);
+    ctx.socket.broadcast.emit("server:updateFriend", user);
 
     const { friendList } = userInfo;
     if (friendList) {
@@ -21,7 +23,12 @@ module.exports = app => {
       ctx.socket.emit("server:friendList", res);
     }
 
+
+
     await next();
 
+    // 用户下线,清除客户端id
+    user = await ctx.service.session.exitClient(userInfo.pid);
+    ctx.socket.broadcast.emit("server:updateFriend", user);
   };
 };

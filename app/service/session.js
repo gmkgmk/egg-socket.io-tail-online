@@ -8,6 +8,16 @@ class SessionService extends Service {
     const result = await this.app.mysql.get('userlist', params);
     return result
   }
+  async registerClient(userPid, clientId) {
+    await this.app.mysql.query(`update userlist set clientId=? where pid=?`, [clientId, userPid]);
+    const result = await this.ctx.service.user.findUserById(userPid);
+    return result
+  }
+  async exitClient(userPid) {
+    await this.app.mysql.query(`update userlist set clientId=? where pid=?`, [null, userPid]);
+    const result = await this.ctx.service.user.findUserById(userPid);
+    return result
+  }
 }
 
 module.exports = SessionService;
