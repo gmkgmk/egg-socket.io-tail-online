@@ -17,6 +17,7 @@ class DefaultController extends Controller {
     // const  id = "47518146-ef44-4538-869d-64cc15deb957";
     const { ctx } = this;
     const message = ctx.args[0];
+    console.log("message",ctx.args)
     const id = message.toId;
     const toSocket = ctx.socket.server.sockets.sockets[id];
     toSocket.emit(`server:private_chat`, message);

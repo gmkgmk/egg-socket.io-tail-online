@@ -6,8 +6,10 @@ const API = '/api/v1';
 module.exports = app => {
   const { router, controller, io } = app;
   router.get('/user', controller.home.user);
+  router.get('/find', controller.home.find);
   router.get('/index', controller.home.index);
   router.get('/add', controller.home.addUser);
+  router.get('/article', controller.home.article);
   // app.router.resources('users', '/api/v2/users', app.controller.user);
 
   // router.post(`${API}/user/addUser`, controller.user.addUser);

@@ -1,3 +1,6 @@
+const fs = require("fs");
+const { URL } = require('url');
+
 "use strict";
 
 const Controller = require("egg").Controller;
@@ -256,6 +259,18 @@ class HomeController extends Controller {
     }
     const addUser = await this.ctx.service.home.add(userInfo);
     this.ctx.body = addUser;
+  }
+  async find() {
+    const { ctx } = this;
+    const data = require("../../json/find")
+    ctx.body = data
+  }
+  async article() {
+    const { ctx } = this;
+    // const filePath = new URL('file:///F:/gmk/egg-example/json/article.json')
+    // const data = JSON.parse(fs.readFileSync(filePath));
+    const data = require("../../json/article")
+    ctx.body = data
   }
 }
 
