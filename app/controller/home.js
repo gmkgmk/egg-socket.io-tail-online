@@ -242,6 +242,37 @@ class HomeController extends Controller {
       ]
     };
   }
+  async coupons() {
+    this.ctx.body = {
+      "data": {
+        "couponSingle": " 减20 满200减20 满199减50",
+        "items": [
+          {
+            "couponSchemeId": "6dcab07146a5410eba2cd24ad193c6d7",
+            "schemeAmount": 20,
+            "useScopeStatement": "适用范围：思加图小程序内所有商品（不包含特惠区/当季新…专区）",
+            "useDate": "2018/04/21-2018/04/29"
+          },
+          {
+            "couponSchemeId": "6dcab07146a5410eba2cd24ad193c6d7",
+            "schemeAmount": 20,
+            "limitAmount": "满200.0元可用",
+            "useScopeStatement": "适用范围：思加图小程序内所有商品（不包含特惠区/当季新…专区）",
+            "useDate": "2018/04/23-2018/04/27"
+          },
+          {
+            "couponSchemeId": "513512",
+            "schemeAmount": 50,
+            "limitAmount": "满199.0元可用",
+            "useScopeStatement": "适用范围：思加图小程序内所有商品（不包含特惠区/当季新…专区）",
+            "useDate": "2018/04/03-2018/05/05"
+          }
+        ]
+      },
+      "code": 20000,
+      "errorMsg": "请求成功"
+    }
+  }
   async user() {
     const user = await this.ctx.service.home.find();
     this.ctx.body = {

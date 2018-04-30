@@ -1,34 +1,34 @@
 module.exports = app => {
   return async (ctx, next) => {
-    // const { key } = ctx.req._query;
-    // const userResult = await ctx.service.user.findUserById(key);
-    // if(userResult){
-    //   const userlist = userResult.friendList.split(",");
-    //   const res = await ctx.service.friends.findAllFriend(userlist);
-    //   ctx.socket.emit("userList", res);
-    // }
+    const { app, socket, logger, helper, session, service } = ctx;
+    const id = socket.id;
+    const nsp = app.io.of('/');
+    const query = socket.handshake.query;
 
-    // 发送私聊
-    let userInfo = ctx.session.userInfo;
-    ctx.socket.emit("userInfo", userInfo);
+    // 登录更新状态
+    const userConnect = async user => {
+      let userInfo = await service.session.registerClient(user.pid, id);
 
-
-    let user = await ctx.service.session.registerClient(userInfo.pid, ctx.socket.id);
-    ctx.socket.broadcast.emit("server:updateFriend", user);
-
-    const { friendList } = userInfo;
-    if (friendList) {
-      const userlist = friendList.split(",");
-      const res = await ctx.service.friends.findAllFriend(userlist);
-      ctx.socket.emit("server:friendList", res);
+      const { friendList } = userInfo;
+      if (friendList) {
+        const userList = friendList.split(",");
+        const res = await ctx.service.friends.findAllFriend(userList);
+        userInfo.friendList = res;
+      }
+      return helper.parseMsg("userInfo", { userInfo });
     }
 
+    let user = session.userInfo;
+    // 没有session就返回
+    if (!user) {
+      return
+    }
 
+    const msg = await userConnect(user)
+    socket.emit('userInfo', msg);
 
     await next();
 
-    // 用户下线,清除客户端id
-    user = await ctx.service.session.exitClient(userInfo.pid);
-    ctx.socket.broadcast.emit("server:updateFriend", user);
-  };
-};
+    await service.session.exitClient(user.pid);
+  }
+}

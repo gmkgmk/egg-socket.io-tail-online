@@ -27,3 +27,10 @@ exports.io = {
     },
   },
 };
+
+exports.logger = {
+  consoleLevel: 'INFO',
+};
+exports.logger = {
+  level: 'INFO',
+};

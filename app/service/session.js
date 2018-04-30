@@ -9,12 +9,12 @@ class SessionService extends Service {
     return result
   }
   async registerClient(userPid, clientId) {
-    await this.app.mysql.query(`update userlist set clientId=? where pid=?`, [clientId, userPid]);
+    await this.app.mysql.query(`update userlist set online=1, clientId=? where pid=?`, [clientId, userPid]);
     const result = await this.ctx.service.user.findUserById(userPid);
     return result
   }
   async exitClient(userPid) {
-    await this.app.mysql.query(`update userlist set clientId=? where pid=?`, [null, userPid]);
+    await this.app.mysql.query(`update userlist set online=0, clientId=? where pid=?`, [null, userPid]);
     const result = await this.ctx.service.user.findUserById(userPid);
     return result
   }

@@ -3,13 +3,17 @@ const API = '/api/v1';
 /**
  * @param {Egg.Application} app - egg application
  */
+
 module.exports = app => {
+  // app.logger.error(app.httpclient);
+
   const { router, controller, io } = app;
   router.get('/user', controller.home.user);
   router.get('/find', controller.home.find);
   router.get('/index', controller.home.index);
   router.get('/add', controller.home.addUser);
   router.get('/article', controller.home.article);
+  router.get('/coupons', controller.home.coupons);
   // app.router.resources('users', '/api/v2/users', app.controller.user);
 
   // router.post(`${API}/user/addUser`, controller.user.addUser);
