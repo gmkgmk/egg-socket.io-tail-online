@@ -25,5 +25,5 @@ module.exports = app => {
 
   app.io.route('connection', io.controller.home.index);
   app.io.route('message', io.controller.home.message);
-  app.io.route('privateChat', io.controller.home.privateChat);
+  app.io.route('privateChannel', io.controller.home.privateChannel);
 };

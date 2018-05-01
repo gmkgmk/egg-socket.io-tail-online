@@ -21,7 +21,7 @@ module.exports = app => {
     let user = session.userInfo;
     // 没有session就返回
     if (!user) {
-      return
+      return helper.parseMsg("userInfo", { userInfo: {} });
     }
 
     const msg = await userConnect(user)

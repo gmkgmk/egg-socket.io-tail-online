@@ -4,8 +4,12 @@ const Service = require('egg').Service;
 
 class SessionService extends Service {
   async findUserWithPsw(params) {
-    const { username, password } = params;
-    const result = await this.app.mysql.get('userlist', params);
+    const { username, password, ...other } = params;
+    const param = {
+      username,
+      password
+    }
+    const result = await this.app.mysql.get('userlist', param);
     return result
   }
   async registerClient(userPid, clientId) {

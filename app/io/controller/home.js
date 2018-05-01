@@ -2,31 +2,29 @@
 
 const Controller = require('egg').Controller;
 
-class DefaultController extends Controller {
-  async index() {
-    const { ctx } = this;
-    const message = ctx.args[0];
-    await ctx.socket.emit('server:userInfo', message);
-  }
-  async message() {
+class HomeController extends Controller {
+  async privateChannel() {
     const { ctx, app } = this;
     const message = ctx.args[0];
-    await ctx.socket.server.local.emit('server:message', message);
-  }
-  async privateChat() {
-    // const  id = "47518146-ef44-4538-869d-64cc15deb957";
-    const { ctx } = this;
-    const message = ctx.args[0];
-    const id = message.toId;
-    if(id){
-      const toSocket = ctx.socket.server.sockets.sockets[id];
-      toSocket.emit(`server:private_chat`, message);
-    }else{
-      console.log("用户不在线")
+    const { data: { payload } } = message;
+    const { pid, message: payloadMessage, person: { pid: userPid } } = payload;
+
+    // 将消息加入数据库/缓存
+    await ctx.service.message.insertMessage({ pid, payloadMessage, userPid })
+
+
+    const toUser = await ctx.service.user.findUserById(pid)
+    if (toUser && !toUser.online) {
+      // 如果不在线
+      return
     }
-    // console.log(message.toId)
-    // await ctx.socket.emit(`server:private_chat:${message.toId}`, message);
+    const { clientId } = toUser;
+    const toSocket = ctx.socket.server.sockets.sockets[clientId];
+    const msg = ctx.helper.parseMsg("server:privateChannel", { message: { data: payloadMessage, userPid }, person: toUser })
+    toSocket.emit(`server:privateChannel`, msg);
+    ctx.socket.emit('server:privateChannel', msg);
+    
   }
 }
 
-module.exports = DefaultController;
+module.exports = HomeController;
