@@ -5,6 +5,7 @@ module.exports = app => {
     const nsp = app.io.of('/');
     const query = socket.handshake.query;
 
+    let user = session.userInfo;
     // 登录更新状态
     const userConnect = async user => {
       let userInfo = await service.session.registerClient(user.pid, id);
@@ -15,20 +16,38 @@ module.exports = app => {
         const res = await ctx.service.friends.findAllFriend(userList);
         userInfo.friendList = res;
       }
-      return helper.parseMsg("userInfo", { userInfo });
+      return userInfo
     }
 
-    let user = session.userInfo;
     // 没有session就返回
     if (!user) {
-      return helper.parseMsg("userInfo", { userInfo: {} });
+      socket.emit('userInfo', helper.parseMsg("userInfo", { userInfo: {} }));
+      return
     }
 
-    const msg = await userConnect(user)
+    const userInfo = await userConnect(user);
+    const msg = helper.parseMsg("userInfo", { userInfo });
     socket.emit('userInfo', msg);
+    const connectUser = helper.parseMsg("connect", { friend: userInfo })
+    socket.broadcast.emit("friendConnect", connectUser);
 
+    // 在线列表
+    // nsp.adapter.clients(['/'], (err, clients) => {
+    //   logger.debug('#online_join', clients);
+
+    //   // 更新在线用户列表
+    //   nsp.to('/').emit('online', {
+    //     clients,
+    //     action: 'join',
+    //     target: 'participator',
+    //     message: `User(${id}) joined.`,
+    //   });
+    // });
     await next();
 
+
     await service.session.exitClient(user.pid);
+    // 下线通知好友
+    socket.broadcast.emit("friendDisconnect", helper.parseMsg("friendDisconnect", user));
   }
 }

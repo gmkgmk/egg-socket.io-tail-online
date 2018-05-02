@@ -22,8 +22,6 @@ class HomeController extends Controller {
     const toSocket = ctx.socket.server.sockets.sockets[clientId];
     const msg = ctx.helper.parseMsg("server:privateChannel", { message: { data: payloadMessage, userPid }, person: toUser })
     toSocket.emit(`server:privateChannel`, msg);
-    ctx.socket.emit('server:privateChannel', msg);
-    
   }
 }
 
